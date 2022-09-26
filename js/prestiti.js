@@ -63,7 +63,7 @@ d3.csv("data/out.csv", function (error, links) {
     .on("mouseenter", function(d){
       link
         .attr("display", "none")
-        .filter(l => l.source.name === d.name || l.target.name === d.name)
+        .filter(l => l.source.name === d.name)
         .attr("display", "block");
     })
     .on("mouseleave", function(d){
