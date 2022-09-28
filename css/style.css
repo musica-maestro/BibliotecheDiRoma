@@ -17,3 +17,8 @@ div.tooltip {
   border-width: 1px;
   pointer-events: none;
 }
+
+.table-responsive {
+  overflow-y:scroll;
+  max-height:200;
+}
