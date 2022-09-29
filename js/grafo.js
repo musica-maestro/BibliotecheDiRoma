@@ -1,29 +1,42 @@
-function drawGraph(data) {
-    var nodesByName = {};
+linkGroup = svgGraph.append("g")
+    .attr("class", "links")
 
-    // Create nodes for each unique source and target.
-    data.forEach(function (link) {
-        link.source = nodeByName(link.BibliotecaRichiedente);
-        link.target = nodeByName(link.BibliotecaPrestante);
-    });
+nodeGroup = svgGraph.append("g")
+    .attr("class", "nodes")
 
-    // Extract the array of nodes from the map by name.
-    var nodes = d3.values(nodesByName);
+function drawGraph(graphNodes, graphLinks) {
+    
 
-    // Create the link lines.
-    var link = svg.selectAll(".link")
-        .data(data)
-        .enter().append("line")
-        .attr("class", "link")
-        .attr("stroke-width", d => 0.1 * d.NumeroLibri);  // width scaled by number
+    simulation.alpha(0.3).restart();
+
+    // Redefine and restart simulation
+    simulation.nodes(graphNodes)
+        .on("tick", ticked);
+
+    simulation.force("link")
+        .links(graphLinks);
+
+    // Update links
+    link = linkGroup
+        .selectAll("line")
+        .data(graphLinks);
+
+    link.exit().remove();
+
+    // Enter links
+    linkEnter = link
+        .enter().append("line");
+
+    link = linkEnter
+        .merge(link);
 
 
-    // Create the node circles.
-    var node = svg.selectAll(".node")
-        .data(nodes)
-        .enter().append("circle")
-        .attr("class", "node")
-        .attr("r", 4.5)
+    // Update the nodes
+    node = nodeGroup.selectAll("circle").data(graphNodes);
+
+    // Enter any new nodes
+    nodeEnter = node.enter().append("circle")
+        .attr("r", 5)
         .on("click", function (d) {
             console.log(this)
             //gestisciTabelle(d, this)
@@ -35,25 +48,20 @@ function drawGraph(data) {
         .on("mouseleave", function (d) {
             showAllLinks(link, d)
             deshowTooltip(d)
-        });
+        })
+        .call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended));
 
-    var drag_handler = d3.drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended);
+    node = nodeEnter.merge(node);
 
-    drag_handler(node);
+    // Exit any old nodes
+    node.exit().remove();
 
-    // Start the force layout.
-    simulation
-        .nodes(nodes)
-        .on("tick", tick)
 
-    simulation.force("link")
-        .links(data)
-        .strength(d => 0.005);
 
-    function tick() {
+    function ticked() {
         link
             .attr("x1", function (d) { return d.source.x; })
             .attr("y1", function (d) { return d.source.y; })
@@ -61,13 +69,8 @@ function drawGraph(data) {
             .attr("y2", function (d) { return d.target.y; });
 
         node
-            .attr("transform", function (d) {
-                return "translate(" + d.x + "," + d.y + ")";
-            })
-    }
-
-    function nodeByName(name) {
-        return nodesByName[name] || (nodesByName[name] = { name: name });
+            .attr("cx", function (d) { return d.x; })
+            .attr("cy", function (d) { return d.y; });
     }
 }
 

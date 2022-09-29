@@ -6,7 +6,7 @@ body {
   margin: auto;
 }
 
-.link {
+.links {
   stroke: #999;
   stroke-opacity: 0.6;
 }
@@ -30,13 +30,6 @@ div.tooltip {
   max-height:400px;
   font-size: 11px;
 }
-
-
-
-
-
-
-
 
 .ticks {
   font-size: 10px;
@@ -67,8 +60,11 @@ div.tooltip {
 }
 
 .handle {
+  position: absolute;
+  z-index: -1;
   fill: #fff;
   stroke: #000;
   stroke-opacity: 0.5;
   stroke-width: 1.25px;
 }
+
