@@ -15,40 +15,48 @@
 <body>
   <div class="container">
     <div class="row">
-      <div class="col-5">
-        <div id="graph"></div>
+      <div class="col-4">
+        <div class="mx-auto" id="graph"></div>
       </div>
-      <div class="col-3">
-        <div class="table-responsive">
-          <table class="table table-light table-hover" id="table1">
-            <div id="caption1">Seleziona Biblioteca 1</div>
-            <thead id="table1_head">
-            </thead>
-            <tbody id="table1_body">
-            </tbody>
-          </table>
-        </div>
+      <div class="col-4">
+        <div class="mx-auto" id="graph"></div>
       </div>
-      <div class="col-1"></div>
-      <div class="col-3">
-        <div class="table-responsive">
-          <table class="table table-light table-hover" id="table2">
-            <div id="caption2">Seleziona Biblioteca 2</div>
-            <thead id="table2_head">
-            </thead>
-            <tbody id="table2_body">
-            </tbody>
-          </table>
-        </div>
+      <div class="col-4">
+        <div class="mx-auto" id="graph"></div>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-1">
+        <button type="button" id="play-stop" class="btn btn-primary w-100">Play</button>
+      </div>
+      <div class="col-2">
+        <input class="w-100" type="date" id="start-date" placeholder="dd-mm-yyyy">
+      </div>
+      <div class="col-7">
+        <input class="w-100" type="range" id="date">
+      </div>
+      <div class="col-2">
+        <input class="w-100" type="date" id="end-date" placeholder="dd-mm-yyyy">
+      </div>
     </div>
+
+
+
+
+
+    
+  </div>
 
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
     crossorigin="anonymous"></script>
   <script src="js/prestiti.js"></script>
+  <script src="js/tables.js"></script>
+  <script src="js/filtri.js"></script>
+  <script src="js/grafo.js"></script>
+  <script src="js/slider.js"></script>
 </body>
 
 </html>
