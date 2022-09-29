@@ -52,7 +52,7 @@ var dataset;
 
 
 
-d3.csv("data/out.csv", prepare, function (data) {
+d3.csv("data/fake.csv", prepare, function (data) {
 
     var nodesByName = {};
 
