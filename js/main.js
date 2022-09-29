@@ -4,6 +4,8 @@ var parseDate = d3.timeParse("%d-%m-%Y");
 
 var startDate, endDate
 
+var raceData
+
 var startDatePicker = d3.select("#start-date").on("change", cambiaRange)
 var endDatePicker = d3.select("#end-date").on("change", cambiaRange)
 
@@ -65,6 +67,7 @@ d3.csv("data/fake.csv", prepare, function (data) {
     // Extract the array of nodes from the map by name.
     nodes = d3.values(nodesByName);
     dataset = data
+    raceData = aggiustaDati(dataset)
     initScale(dataset)
 
     drawGraph(nodes, dataset);
@@ -218,4 +221,9 @@ function cambiaRange(){
     currentValue = 0
 
     setScale(dataset, startDate, endDate)
+}
+
+function aggiustaDati(data){
+
+    console.log(d3.nest
 }
