@@ -2,7 +2,7 @@ body {
   background-color: #FAF8F6;
   font-family: 'Montserrat', serif;
   color: #000000;
-  font-size: 18px;
+  font-size: 12px;
   margin: auto;
 }
 
@@ -11,7 +11,7 @@ body {
   stroke-opacity: 0.6;
 }
 
-circles {
+.circles {
   stroke: rgb(181, 225, 37);
   stroke-width: 1.5px;
 }
@@ -31,14 +31,11 @@ div.tooltip {
   font-size: 11px;
 }
 
-.ticks {
-  font-size: 10px;
-}
-
 .track,
 .track-inset,
 .track-overlay {
   stroke-linecap: round;
+  margin: 10%;
 }
 
 .track {
@@ -60,11 +57,55 @@ div.tooltip {
 }
 
 .handle {
-  position: absolute;
-  z-index: -1;
   fill: #fff;
   stroke: #000;
   stroke-opacity: 0.5;
   stroke-width: 1.25px;
 }
 
+
+
+
+
+text{
+  font-size: 10px;
+  font-family: Open Sans, sans-serif;
+}
+
+text.title{
+  font-size: 24px;
+  font-weight: 500;
+}
+  text.subTitle{
+    font-weight: 500;
+    fill: #777777;
+  }
+  text.caption{
+    font-weight: 400;
+    font-size: 14px;
+    fill: #777777;
+  }
+  text.label{
+    font-weight: 600;
+  }
+
+  text.valueLabel{
+   font-weight: 300;
+  }
+
+  .tick text {
+    fill: #777777;
+  }
+  .xAxis .tick:nth-child(2) text {
+    text-anchor: start;
+  }
+  .tick line {
+    shape-rendering: CrispEdges;
+    stroke: #dddddd;
+  }
+  .tick line.origin{
+    stroke: #aaaaaa;
+  }
+  path.domain{
+    display: none;
+  }

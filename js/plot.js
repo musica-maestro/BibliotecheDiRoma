@@ -1,82 +1,178 @@
+var svgRace = d3.select("#chart").append("svg")
+    .attr("width", width + margin.left + margin.right + 50)
+    .attr("height", height + margin.top + margin.bottom);
 
- function plotChart(data) {
-    const svg = d3.select("#chart")
-    const width = svg.node().clientWidth;
-    const height = svg.node().clientHeight;
-    const ticker = 500;
+var tickDuration = 500;
 
-    const dateList = data.Data.keys
-    const fontSize = 16;
-    const rectProperties = {height: 20, padding: 10}
-    const container = svg.append("g")
-                            .classed("container", true)
-                            .style("transform", "translateY(25px)")
+var top_n = 10;
 
+let barPadding = (height - (margin.bottom + margin.top)) / (top_n * 5);
 
-    const widthScale = d3.scaleLinear()
-    const axisTop = svg
-                    .append('g')
-                    .classed('axis', true)
-                    .style("transform", "translate(10px, 20px)")
-                    .call(d3.axisTop(widthScale))
+var raceX = d3.scaleLinear()
+var raceY = d3.scaleLinear()
+var xAxis = d3.axisTop()
 
-    const update = (date) =>  {
+function setRaceScale(data) {
+    raceX.domain([0, d3.max(data, d => d.value)])
+        .range([margin.left, width - margin.right - 100]);
 
-        const presentData = processEachDateData(data.get(date).get("Confirmed")[0]) //da modifica
-        widthScale.domain([0, d3.max(Object.values(presentData), d => d.value)])
-                  .range([0, width - fontSize - 50])
+    raceY.domain([top_n, 0])
+        .range([height - margin.bottom, margin.top]);
 
-        axisTop                
-            .transition()
-            .duration(ticker / 1.2)
-            .ease(d3.easeLinear)
-            .call(d3.axisTop(widthScale))
+    xAxis.scale(raceX)
+        .ticks(width > 500 ? 5 : 2)
+        .tickSize(-(height - margin.top - margin.bottom))
+        .tickFormat(d => d3.format(',')(d));
 
-        const sortedRange = [...presentData].sort((a,b) => b.value - a.value)
+    svgRace.append('g')
+        .attr('class', 'axis xAxis')
+        .attr('transform', `translate(0, ${margin.top})`)
+        .call(xAxis)
+        .selectAll('.tick line')
+        .classed('origin', d => d == 0);
+}
 
-        container
-            .selectAll("text")
-            .data(presentData)
-            .enter()
-            .append("text")
+function initRace(data) {
+    sortedRange = [...data].sort((a, b) => b.value - a.value)
+    setRaceScale(data)
 
-        container
-            .selectAll("text")
-            .text(d => d.key + " "+ d.value)
-            .transition()
-            .delay(500)
-            .attr("x", d => widthScale(d.value) + fontSize)
-            .attr("y", (d,i) => sortedRange.findIndex(e => e.key === d.key) * (rectProperties.height + rectProperties.padding) + fontSize) 
+    bars = svgRace.selectAll('rect.bar')
+        .data(data, d => d.key)
+        .enter()
+        .append('rect')
+        .attr('class', 'bar')
+        .attr('x', raceX(0) + 1)
+        .attr('width', d => raceX(d.value) - raceX(0) - 1)
+        .attr('y', d => raceY(sortedRange.findIndex(e => e.key === d.key)) + 5)
+        .attr('height', raceY(1) - raceY(0) - barPadding)
+        .style('fill', d => cScale(d.key)); //metti colore
 
-        container
-            .selectAll("rect")
-            .data(presentData)
-            .enter()
-            .append("rect")
+    labels = svgRace.selectAll('text.label')
+        .data(data, d => d.key)
+        .enter()
+        .append('text')
+        .attr('class', 'label')
+        .attr('x', d => raceX(d.value) - 8)
+        .attr('y', (d, i) => raceY(sortedRange.findIndex(e => e.key === d.key)) + 5 + ((raceY(1) - raceY(0)) / 2) + 1)
+        .style('text-anchor', 'end')
+        .html(d => d.key);
 
-        container
-            .selectAll("rect")
-            .attr("x", 10)
-            .transition()
-            .delay(500)
-            .attr("y", (d,i) => sortedRange.findIndex(e => e.key === d.key) * (rectProperties.height + rectProperties.padding))
-            .attr("width", d => d.value <= 0? 0 : widthScale(d.value))
-            .attr("height", 20)
+    valueLabels = svgRace.selectAll('text.valueLabel')
+        .data(data, d => d.key)
+        .enter()
+        .append('text')
+        .attr('class', 'valueLabel')
+        .attr('x', d => raceX(d.value) + 5)
+        .attr('y', d => raceY(sortedRange.findIndex(e => e.key === d.key)) + 5 + ((raceY(1) - raceY(0)) / 2) + 1)
+        .text(d => d.value);
+}
 
+function updateRace(data){
+    sortedRange = [...data].sort((a, b) => b.value - a.value)
+    raceX.domain([0, d3.max(data, d => d.value)]); 
+     
+    svgRace.select('.xAxis')
+        .transition()
+        .duration(tickDuration)
+        .ease(d3.easeLinear)
+        .call(xAxis);
+    
+       let bars = svgRace.selectAll('.bar').data(data, d => d.key);
+
+       bars
+       .enter()
+       .append('rect')
+       .attr('class', d => `bar ${d.key.replace(/\s/g,'_')}`)
+       .attr('x', raceX(0)+1)
+       .attr( 'width', d => raceX(d.value)-raceX(0)-1)
+       .attr('y', d => raceY(top_n+1)+5)
+       .attr('height', raceY(1)-raceY(0)-barPadding)
+       .style('fill', d => cScale(d.key))
+       .transition()
+         .duration(tickDuration)
+         .ease(d3.easeLinear)
+         .attr('y', d => raceY(sortedRange.findIndex(e => e.key === d.key))+5);
+         
+      bars
+       .transition()
+         .duration(tickDuration)
+         .ease(d3.easeLinear)
+         .attr('width', d => raceX(d.value)-raceX(0)-1)
+         .attr('y', d => raceY(sortedRange.findIndex(e => e.key === d.key))+5);
+           
+      bars
+       .exit()
+       .transition()
+         .duration(tickDuration)
+         .ease(d3.easeLinear)
+         .attr('width', d => raceX(d.value)-raceX(0)-1)
+         .attr('y', d => raceY(top_n+1)+5)
+         .remove();
+
+      let labels = svgRace.selectAll('.label')
+         .data(data, d => d.key);
+    
+      labels
+       .enter()
+       .append('text')
+       .attr('class', 'label')
+       .attr('x', d => raceX(d.value)-8)
+       .attr('y', d => raceY(top_n+1)+5+((raceY(1)-raceY(0))/2))
+       .style('text-anchor', 'end')
+       .html(d => d.key)    
+       .transition()
+         .duration(tickDuration)
+         .ease(d3.easeLinear)
+         .attr('y', d => raceY(sortedRange.findIndex(e => e.key === d.key))+5+((raceY(1)-raceY(0))/2)+1);
+            
+   
+         labels
+         .transition()
+         .duration(tickDuration)
+           .ease(d3.easeLinear)
+           .attr('x', d => raceX(d.value)-8)
+           .attr('y', d => raceY(sortedRange.findIndex(e => e.key === d.key))+5+((raceY(1)-raceY(0))/2)+1);
+    
+      labels
+         .exit()
+         .transition()
+           .duration(tickDuration)
+           .ease(d3.easeLinear)
+           .attr('x', d => raceX(d.value)-8)
+           .attr('y', d => raceY(top_n+1)+5)
+           .remove();
+        
+
+    
+      let valueLabels = svgRace.selectAll('.valueLabel').data(data, d => d.key);
+   
+      valueLabels
+         .enter()
+         .append('text')
+         .attr('class', 'valueLabel')
+         .attr('x', d => raceX(d.value)+5)
+         .attr('y', d => raceY(top_n+1)+5)
+         .text(d => d.value)
+         .transition()
+           .duration(tickDuration)
+           .ease(d3.easeLinear)
+           .attr('y', d => raceY(sortedRange.findIndex(e => e.key === d.key))+5+((raceY(1)-raceY(0))/2)+1);
+           
+      valueLabels
+         .transition()
+           .duration(tickDuration)
+           .ease(d3.easeLinear)
+           .attr('x', d => raceX(d.value)+5)
+           .attr('y', d => raceY(sortedRange.findIndex(e => e.key === d.key))+5+((raceY(1)-raceY(0))/2)+1)
+           .tween("text", function(d) {d.value});
+     
+    
+     valueLabels
+       .exit()
+       .transition()
+         .duration(tickDuration)
+         .ease(d3.easeLinear)
+         .attr('x', d => raceX(d.value)+5)
+         .attr('y', d => raceY(top_n+1)+5)
+         .remove();
     }
-}
-
-function processData(data) { 
-    return d3.group(data, d => d.date, e => e.status);
-}
-
-function processEachDateData(data) {
-    //remove status and date
-    delete data.date
-    delete data.status
-    delete data.tt // tt is total 
-
-    return Object.keys(data)
-            .map(key => ({key, value: parseInt(data[key])}))
-            // .sort((a,b) => b.value-a.value) 
-}

@@ -2,21 +2,16 @@ var formatDateIntoYear = d3.timeFormat("%b %Y");
 var formatDate = d3.timeFormat("%d %b %Y");
 var parseDate = d3.timeParse("%d-%m-%Y");
 
-var startDate, endDate
+var cScale = d3.scaleOrdinal(d3.schemePastel2);
 
-var raceData
+var startDate, endDate
 
 var startDatePicker = d3.select("#start-date").on("change", cambiaRange)
 var endDatePicker = d3.select("#end-date").on("change", cambiaRange)
 
-var margin = { top: 0, right: 50, bottom: 0, left: 50 },
+const margin = { top: 25, right: 25, bottom: 25, left: 25 },
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
-
-var svgGraph = d3.select("#graph")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom);
 
 var svgSlider = d3.select("#vis")
     .append("svg")
@@ -41,7 +36,7 @@ var targetValue = width;
 
 var playButton = d3.select("#play-button");
 
-var x = d3.scaleTime()
+var timeX = d3.scaleTime()
 
 var slider
 var handle
@@ -67,8 +62,12 @@ d3.csv("data/fake.csv", prepare, function (data) {
     // Extract the array of nodes from the map by name.
     nodes = d3.values(nodesByName);
     dataset = data
-    raceData = aggiustaDati(dataset)
+    
+    console.log(nodes)
     initScale(dataset)
+
+    temp = creaDatiRace(dataset)
+    initRace(temp);
 
     drawGraph(nodes, dataset);
 
@@ -82,7 +81,7 @@ d3.csv("data/fake.csv", prepare, function (data) {
                 button.text("Play");
             } else {
                 moving = true;
-                timer = setInterval(step, 100);
+                timer = setInterval(step, 1000);
                 button.text("Pause");
             }
             console.log("Slider moving: " + currentValue);
@@ -99,7 +98,7 @@ function prepare(d) {
 }
 
 function step() {
-    update(x.invert(currentValue));
+    update(timeX.invert(currentValue));
     currentValue = currentValue + (targetValue / 151);
     if (currentValue > targetValue) {
         moving = false;
@@ -113,31 +112,31 @@ function step() {
 
 function update(h) {
     // update position and text of label according to slider scale
-    handle.attr("cx", x(h));
+    handle.attr("cx", timeX(h));
 
     label
-        .attr("x", x(h))
+        .attr("x", timeX(h))
         .text(formatDate(h));
 
     // filter data set and redraw plot
     var newData = dataset.filter(function (d) {
         return d.Data <= h;
     })
+
+    temp = creaDatiRace(newData)
+    updateRace(temp);
     drawGraph(nodes, newData);
 }
 
 
 function initScale(data){
+    cScale.domain(d3.map(data, function(d) {return d.BibliotecaPrestante;}).keys()).range(d3.schemeSet2);
     startDate = d3.min(data, d => d.Data)
     endDate = d3.max(data, d => d.Data)
-
     parsedMin = parseForDateInput(startDate)
     parsedMax = parseForDateInput(endDate)
-
-
     startDatePicker.attr("min", parsedMin).attr("max", parsedMax).attr("value", parsedMin)
     endDatePicker.attr("min", parsedMin).attr("max", parsedMax).attr("value", parsedMax)
-
     setScale(data, startDate, endDate)
 }
 
@@ -145,7 +144,7 @@ function initScale(data){
 function setScale(data, startDate, endDate) {
 
 
-    x.domain([startDate, endDate])
+    timeX.domain([startDate, endDate])
         .range([0, targetValue])
         .clamp(true);
 
@@ -157,8 +156,8 @@ function setScale(data, startDate, endDate) {
         
     slider.append("line")
         .attr("class", "track")
-        .attr("x1", x.range()[0])
-        .attr("x2", x.range()[1])
+        .attr("x1", timeX.range()[0])
+        .attr("x2", timeX.range()[1])
         .select(function () { return this.parentNode.appendChild(this.cloneNode(true)); })
         .attr("class", "track-inset")
         .select(function () { return this.parentNode.appendChild(this.cloneNode(true)); })
@@ -167,7 +166,7 @@ function setScale(data, startDate, endDate) {
             .on("start.interrupt", function () { slider.interrupt(); })
             .on("start drag", function () {
                 currentValue = d3.event.x;
-                update(x.invert(currentValue));
+                update(timeX.invert(currentValue));
             })
         );
 
@@ -175,10 +174,10 @@ function setScale(data, startDate, endDate) {
         .attr("class", "ticks")
         .attr("transform", "translate(0," + 18 + ")")
         .selectAll("text")
-        .data(x.ticks(10))
+        .data(timeX.ticks(10))
         .enter()
         .append("text")
-        .attr("x", x)
+        .attr("x", timeX)
         .attr("y", 10)
         .attr("text-anchor", "middle")
         .text(function (d) { return formatDateIntoYear(d); });
@@ -223,7 +222,15 @@ function cambiaRange(){
     setScale(dataset, startDate, endDate)
 }
 
-function aggiustaDati(data){
+function creaDatiRace(data){
 
-    console.log(d3.nest
+    raceData = d3.nest().key(function(d){
+        return d.BibliotecaRichiedente })
+    .rollup(function(d){
+        return d3.sum(d, function(d){
+            return d.NumeroLibri;
+        });
+    }).entries(data)
+
+    return raceData
 }

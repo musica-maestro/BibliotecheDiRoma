@@ -1,3 +1,8 @@
+var svgGraph = d3.select("#graph")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom);
+
 linkGroup = svgGraph.append("g")
     .attr("class", "links")
 
@@ -20,6 +25,8 @@ function drawGraph(graphNodes, graphLinks) {
     link = linkGroup
         .selectAll("line")
         .data(graphLinks);
+
+    console.log(link)
 
     link.exit().remove();
 
