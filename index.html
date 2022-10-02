@@ -20,8 +20,8 @@
       <div class="col-3 my-5">
         <button class="btn btn-primary my-2 w-100" id="play-button">Play</button>
         <div class="row form-inline"></div>
-        <div class="input-group-text my-2">Data iniziale:<input class="" type="date" id="start-date" placeholder="dd-mm-yyyy"></div>
-        <div class="input-group-text my-2">Data finale:<input class="" type="date" id="end-date" placeholder="dd-mm-yyyy"></div>
+        <div class="input-group-text my-2">Data iniziale:&emsp;<input class="" type="date" id="start-date" placeholder="dd-mm-yyyy"></div>
+        <div class="input-group-text my-2">Data finale:&emsp;&ensp;&nbsp;<input class="" type="date" id="end-date" placeholder="dd-mm-yyyy"></div>
       </div>
       <div class="col-9">
         <div id="vis"></div>
@@ -30,19 +30,28 @@
 
 
     <div class="row">
-      <div class="col-md-8 offset-md-2">
-        <h3 class="my-2">Grafo dei prestiti</h3>
+      <div class="col-4">
+        <h3 class="my-2 text-primary">Istruzioni</h3>
+        <p>Questa interfaccia serve a studiare i prestiti interbibliotecari delle "Biblioteche di Roma".</p>
+        <p>In alto è possibile selezionare il periodo di interesse dell'analisi. Premendo il tasto play è possibile far partire l'animazione dei grafici. È possibile selezionare l'intervallo in modo che l'animazione sia in ordine cronologico inverso.</p>
+        <p>Nel "Grafo dei prestiti" (a destra) ogni nodo rappresenta una biblioteca e ogni arco un prestito. 
+          Posizionando il mouse su un nodo si evidenziano le richieste di prestito dal nodo selezionato verso le biblioteche collegate.</p>
+        <p>Nei grafici in basso è possibile vedere la top 10 delle biblioteche che richiedono oppure prestano più libri.</p>
+        <p>Facendo click su un nodo oppure su una barra si evidenziano le informazioni relative a quella biblioteca (può essere selezionato più di un elemento).</p>
+      </div>
+      <div class="col-md-8">
+        <h3 class="my-2 text-center">Grafo dei prestiti</h3>
         <div id="graph"></div>
       </div>
     </div>
 
     <div class="row">
       <div class="col-6">
-        <h3>Top 10 Biblioteche che chiedono libri in prestito</h3>
+        <h3>Top 10 Biblioteche richiedenti</h3>
         <div id="richiedenti"></div>
       </div>
       <div class="col-6">
-        <h3>Top 10 Biblioteche che prestano libri</h3>
+        <h3>Top 10 Biblioteche prestanti</h3>
         <div id="prestanti"></div>
       </div>
 

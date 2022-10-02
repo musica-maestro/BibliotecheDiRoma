@@ -63,6 +63,8 @@ function update(h) {
     // update position and text of label according to slider scale
     handle.attr("cx", timeX(h));
 
+    console.log(h)
+
     label
         .attr("x", timeX(h))
         .text(formatDate(h));

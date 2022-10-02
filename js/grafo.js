@@ -59,11 +59,9 @@ function drawGraph(graphNodes, graphLinks) {
     nodeEnter = node.enter().append("circle")
         .attr("r", 8)
         .attr("stroke", "black")
-        .on("click", function (d, i) {
-            if(d3.select(this).attr("fill") == null)
-                d3.select(this).attr("fill", cScale(d.name))
-            else
-                d3.select(this).attr("fill", null)
+        .attr('class', d => `ball ${d.name.replace(/\s/g, '_')}`)
+        .on("click", function (d) {
+            evidenzia(d.name)
         })
         .on("mouseenter", function (d) {
             enfatiseLink(link, d)
@@ -138,12 +136,29 @@ function showTooltip(d) {
         .duration(200)
         .style("opacity", .7);
     tooltip.html(d.name)
-        .style("left", (d3.event.pageX) + "px")
-        .style("top", (d3.event.pageY - 28) + "px");
+        .style("left", (d3.event.pageX - widthGraph + 100) + "px")
+        .style("top", (d3.event.pageY - 160) + "px");
 }
 
 function deshowTooltip(d) {
     tooltip.transition()
         .duration(500)
         .style("opacity", 0);
+}
+
+function evidenzia(name){
+
+    classNameBars = 'rect.bar.'+`${name.replace(/\s/g, '_')}`
+    classNameBalls = 'circle.ball.'+`${name.replace(/\s/g, '_')}`
+    bars = d3.selectAll(classNameBars)
+    balls = d3.selectAll(classNameBalls)
+
+    if(bars.attr("stroke") == null || balls.attr("fill") == null){
+        balls.attr("fill", cScale(name))
+        bars.attr("stroke", "black").attr("stroke-width", 4)
+    }
+    else{
+        balls.attr("fill", null)
+        bars.attr("stroke", null)
+    }
 }

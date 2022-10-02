@@ -1,6 +1,6 @@
 const marginRace = { top: 10, right: 30, bottom: 0, left: 10 },
-    widthRace = 500
-    heightRace = 500
+    widthRace = 400
+    heightRace = 400
 
 var tickDuration = 500;
 var top_n = 10;
@@ -94,6 +94,9 @@ function raceRichiedenti(data) {
     .attr('width', d => raceXrichiedenti(d.value) - raceXrichiedenti(0) - 1)
     .attr('y', d => raceYrichiedenti(top_n + 1) + 5)
     .attr('height', raceYrichiedenti(1) - raceYrichiedenti(0) - barPadding)
+    .on("click", function (d) {
+      evidenzia(d.key)
+    })
     .style('fill', d => cScale(d.key))
     .transition()
     .duration(tickDuration)
@@ -123,8 +126,12 @@ function raceRichiedenti(data) {
     .enter()
     .append('text')
     .attr('class', 'label')
+    .attr('font-weight', 'bold')
     .attr('x', d => raceXrichiedenti(d.value) - 8)
     .attr('y', d => raceYrichiedenti(top_n + 1) + 5 + ((raceYrichiedenti(1) - raceYrichiedenti(0)) / 2))
+    .on("click", function (d) {
+      evidenzia(d.key)
+    })
     .style('text-anchor', 'end')
     .html(d => d.key)
     .transition()
@@ -160,14 +167,15 @@ function raceRichiedenti(data) {
     .attr('y', d => raceYrichiedenti(top_n + 1) + 5)
     .remove();
 
-  console.log(valueLabels)
-
   valueLabels
     .enter()
     .append('text')
     .attr('class', 'valueLabel')
     .attr('x', d => raceXrichiedenti(d.value) + 5)
     .attr('y', d => raceYrichiedenti(top_n + 1) + 5)
+    .on("click", function (d) {
+      evidenzia(d.key)
+    })
     .text(d => d.value)
     .transition()
     .duration(tickDuration)
@@ -209,6 +217,9 @@ function racePrestanti(data) {
     .attr('width', d => raceXprestanti(d.value) - raceXprestanti(0) - 1)
     .attr('y', d => raceYprestanti(top_n + 1) + 5)
     .attr('height', raceYprestanti(1) - raceYprestanti(0) - barPadding)
+    .on("click", function (d) {
+      evidenzia(d.key)
+    })
     .style('fill', d => cScale(d.key))
     .transition()
     .duration(tickDuration)
@@ -240,6 +251,9 @@ function racePrestanti(data) {
     .attr('class', 'label')
     .attr('x', d => raceXprestanti(d.value) - 8)
     .attr('y', d => raceYprestanti(top_n + 1) + 5 + ((raceYprestanti(1) - raceYprestanti(0)) / 2))
+    .on("click", function (d) {
+      evidenzia(d.key)
+    })
     .style('text-anchor', 'end')
     .html(d => d.key)
     .transition()
@@ -283,6 +297,9 @@ function racePrestanti(data) {
     .attr('class', 'valueLabel')
     .attr('x', d => raceXprestanti(d.value) + 5)
     .attr('y', d => raceYprestanti(top_n + 1) + 5)
+    .on("click", function (d) {
+      evidenzia(d.key)
+    })
     .text(d => d.value)
     .transition()
     .duration(tickDuration)
