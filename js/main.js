@@ -1,34 +1,15 @@
-var formatDateIntoYear = d3.timeFormat("%b %Y");
-var formatDate = d3.timeFormat("%d %b %Y");
-var parseDate = d3.timeParse("%d-%m-%Y");
-
+/* Scala per i colori */
 var cScale = d3.scaleOrdinal(d3.schemePastel2);
 
-var startDate, endDate
+var nodes
+var dataset;
 
-var startDatePicker = d3.select("#start-date").on("change", cambiaRange)
-var endDatePicker = d3.select("#end-date").on("change", cambiaRange)
 
-const margin = { top: 25, right: 25, bottom: 25, left: 25 },
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+const margin = { top: 25, right: 50, bottom: 25, left: 50 },
+    width = 720 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
 
-var svgSlider = d3.select("#vis")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right);
-
-var tooltip = d3.select("#graph").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
-
-var simulation = d3.forceSimulation()
-    .force("link", d3.forceLink().id(function (d) { return d; }))
-    .force("x", d3.forceX(150).strength(0.05))
-    .force("y", d3.forceY(75).strength(0.05))
-    .force("charge", d3.forceManyBody())
-    .force("center", d3.forceCenter(width / 2, height / 2));
-
-////////// slider //////////
+////////// Slider //////////
 
 var moving = false;
 var currentValue = 0;
@@ -42,59 +23,28 @@ var slider
 var handle
 var label
 
-var nodes
-var dataset;
+var svgSlider = d3.select("#vis")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right);
 
-////////// plot //////////
+/* Formatter per le date */
+var formatDateIntoYear = d3.timeFormat("%b %Y");
+var formatDate = d3.timeFormat("%d %b %Y");
+var parseDate = d3.timeParse("%d-%m-%Y");
 
+/* Selettori per le date */
+var startDate, endDate
+var startDatePicker = d3.select("#start-date").on("change", cambiaRange)
+var endDatePicker = d3.select("#end-date").on("change", cambiaRange)
 
+function cambiaRange() {
+    startDate = startDatePicker.property("valueAsDate")
+    endDate = endDatePicker.property("valueAsDate")
 
-d3.csv("data/fake.csv", prepare, function (data) {
+    slider.remove()
+    currentValue = 0
 
-    var nodesByName = {};
-
-    // Create nodes for each unique source and target.
-    data.forEach(function (link) {
-        link.source = nodeByName(link.BibliotecaRichiedente);
-        link.target = nodeByName(link.BibliotecaPrestante);
-    });
-
-    // Extract the array of nodes from the map by name.
-    nodes = d3.values(nodesByName);
-    dataset = data
-    
-    console.log(nodes)
-    initScale(dataset)
-
-    temp = creaDatiRace(dataset)
-    initRace(temp);
-
-    drawGraph(nodes, dataset);
-
-    playButton
-        .on("click", function () {
-            var button = d3.select(this);
-            if (button.text() == "Pause") {
-                moving = false;
-                clearInterval(timer);
-                timer = 100;
-                button.text("Play");
-            } else {
-                moving = true;
-                timer = setInterval(step, 1000);
-                button.text("Pause");
-            }
-            console.log("Slider moving: " + currentValue);
-        })
-
-    function nodeByName(name) {
-        return nodesByName[name] || (nodesByName[name] = { name: name });
-    }
-})
-
-function prepare(d) {
-    d.Data = parseDate(d.Data);
-    return d;
+    setSliderScale(dataset, startDate, endDate)
 }
 
 function step() {
@@ -123,37 +73,23 @@ function update(h) {
         return d.Data <= h;
     })
 
-    temp = creaDatiRace(newData)
-    updateRace(temp);
+    tempRichiedenti = creaDatiRace(newData, true)
+    tempPrestanti = creaDatiRace(newData, false)
+    updateRacePrestanti(tempPrestanti);
+    updateRaceRichiedenti(tempRichiedenti);
     drawGraph(nodes, newData);
 }
 
-
-function initScale(data){
-    cScale.domain(d3.map(data, function(d) {return d.BibliotecaPrestante;}).keys()).range(d3.schemeSet2);
-    startDate = d3.min(data, d => d.Data)
-    endDate = d3.max(data, d => d.Data)
-    parsedMin = parseForDateInput(startDate)
-    parsedMax = parseForDateInput(endDate)
-    startDatePicker.attr("min", parsedMin).attr("max", parsedMax).attr("value", parsedMin)
-    endDatePicker.attr("min", parsedMin).attr("max", parsedMax).attr("value", parsedMax)
-    setScale(data, startDate, endDate)
-}
-
-
-function setScale(data, startDate, endDate) {
-
+function setSliderScale(data, startDate, endDate) {
 
     timeX.domain([startDate, endDate])
         .range([0, targetValue])
         .clamp(true);
 
-
     slider = svgSlider.append("g")
         .attr("class", "slider")
         .attr("transform", "translate(" + margin.left + "," + height / 5 + ")");
 
-        
     slider.append("line")
         .attr("class", "track")
         .attr("x1", timeX.range()[0])
@@ -186,19 +122,15 @@ function setScale(data, startDate, endDate) {
         .attr("class", "handle")
         .attr("r", 9)
 
-
     label = slider.append("text")
         .attr("class", "label")
         .attr("text-anchor", "middle")
         .text(formatDate(startDate))
         .attr("transform", "translate(0," + (-20) + ")")
-
-
 }
 
 
-
-function parseForDateInput(parsed) {
+function parseDateInput(parsed) {
     day = parsed.getDate()
     month = (parsed.getMonth() + 1)
     year = parsed.getFullYear()
@@ -211,26 +143,97 @@ function parseForDateInput(parsed) {
     finalString = year + '-' + month + '-' + day
     return finalString
 }
+////////// scales //////////
 
-function cambiaRange(){
-    startDate = startDatePicker.property("valueAsDate")
-    endDate = endDatePicker.property("valueAsDate")
 
-    slider.remove()
-    currentValue = 0
 
-    setScale(dataset, startDate, endDate)
+function initScale(data) {
+    cScale.domain(d3.map(data, function (d) { return d.BibliotecaPrestante; }).keys()).range(d3.schemeSet2);
+    startDate = d3.min(data, d => d.Data)
+    endDate = d3.max(data, d => d.Data)
+    parsedMin = parseDateInput(startDate)
+    parsedMax = parseDateInput(endDate)
+    startDatePicker.attr("min", parsedMin).attr("max", parsedMax).attr("value", parsedMin)
+    endDatePicker.attr("min", parsedMin).attr("max", parsedMax).attr("value", parsedMax)
+    setSliderScale(data, startDate, endDate)
 }
 
-function creaDatiRace(data){
 
-    raceData = d3.nest().key(function(d){
-        return d.BibliotecaRichiedente })
-    .rollup(function(d){
-        return d3.sum(d, function(d){
-            return d.NumeroLibri;
-        });
-    }).entries(data)
+function creaDatiRace(data, richiedente) {
+
+    if (richiedente) {
+
+        raceData = d3.nest().key(function (d) {
+            return d.BibliotecaRichiedente
+        })
+            .rollup(function (d) {
+                return d3.sum(d, function (d) {
+                    return d.NumeroLibri;
+                });
+            }).entries(data)
+    }
+    else {
+        raceData = d3.nest().key(function (d) {
+            return d.BibliotecaPrestante
+        })
+            .rollup(function (d) {
+                return d3.sum(d, function (d) {
+                    return d.NumeroLibri;
+                });
+            }).entries(data)
+    }
 
     return raceData
+}
+
+
+/* Leggi i dati e inizia a disegnare */
+d3.csv("data/fake.csv", prepare, function (data) {
+
+    var nodesByName = {}
+
+    // Crea un nodo per ogni sorgente e destinazione unica.
+    data.forEach(function (link) {
+        link.source = nodeByName(link.BibliotecaRichiedente);
+        link.target = nodeByName(link.BibliotecaPrestante);
+    });
+
+    nodes = d3.values(nodesByName) // Estrai l'array dei nodi
+    dataset = data
+
+    initScale(dataset) // Inizializza le scale 
+
+    // Crea e plotta le race chart
+    tempRichiedenti = creaDatiRace(dataset, true)
+    tempPrestanti = creaDatiRace(dataset, false)
+    initRacePrestanti(tempPrestanti);
+    initRaceRichiedenti(tempRichiedenti);
+
+    // plotta il grafo
+    drawGraph(nodes, dataset);
+
+    // abilita il play
+    playButton
+        .on("click", function () {
+            var button = d3.select(this);
+            if (button.text() == "Pause") {
+                moving = false;
+                clearInterval(timer);
+                button.text("Play");
+            } else {
+                moving = true;
+                timer = setInterval(step, 1000);    // un secondo per ogni step
+                button.text("Pause");
+            }
+            console.log("Slider moving: " + currentValue);
+        })
+
+    function nodeByName(name) {
+        return nodesByName[name] || (nodesByName[name] = { name: name });
+    }
+})
+
+function prepare(d) {
+    d.Data = parseDate(d.Data);
+    return d;
 }

@@ -1,7 +1,22 @@
+const marginGraph = { top: 25, right: 25, bottom: 25, left: 25 },
+    widthGraph = 720 - marginGraph.left - marginGraph.right,
+    heightGraph = 400 - marginGraph.top - marginGraph.bottom;
+
 var svgGraph = d3.select("#graph")
     .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom);
+    .attr("width", widthGraph + marginGraph.left + marginGraph.right)
+    .attr("height", heightGraph + marginGraph.top + marginGraph.bottom);
+
+    var simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function (d) { return d; }))
+    .force("x", d3.forceX(150).strength(0.05))
+    .force("y", d3.forceY(75).strength(0.05))
+    .force("charge", d3.forceManyBody())
+    .force("center", d3.forceCenter(width / 2, height / 2));
+
+    var tooltip = d3.select("#graph").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
 
 linkGroup = svgGraph.append("g")
     .attr("class", "links")

@@ -13,18 +13,18 @@
 </head>
 
 <body>
- 
+
   <div class="container">
 
     <div class="row">
-      <div  class="col-2 my-5">
-          <button class="btn btn-primary" id="play-button">Play</button>
+      <div class="col-1 my-5">
+        <button class="btn btn-primary" id="play-button">Play</button>
       </div>
-      <div class="col-2 my-5">
-        <input class="" type="date" id="start-date" placeholder="dd-mm-yyyy">
+      <div class="col-3 my-5 input-group-inline">
+        <div class="input-group-text">Data iniziale:<input class="mx-auto" type="date" id="start-date" placeholder="dd-mm-yyyy"></div>
       </div>
-      <div class="col-2 my-5">
-        <input type="date" id="end-date" placeholder="dd-mm-yyyy">
+      <div class="col-3 my-5 input-group-inline">
+        <div class="input-group-text">Data finale:<input class="mx-auto" type="date" id="end-date" placeholder="dd-mm-yyyy"></div>
       </div>
     </div>
 
@@ -35,23 +35,26 @@
       </div>
     </div>
 
-     <div class="row">
+    <div class="row">
       <div class="col-12">
+        <h5>Grafo dei prestiti</h5>
         <div class="mx-auto" id="graph"></div>
       </div>
     </div>
 
     <div class="row">
       <div class="col-6">
-        <div id="richiedenti" ></div>
+        <h5>Top 10 Biblioteche che chiedono libri in prestito</h5>
+        <div id="richiedenti"></div>
       </div>
       <div class="col-6">
-        <div id="prestanti" ></div>
+        <h5>Top 10 Biblioteche che prestano libri</h5>
+        <div id="prestanti"></div>
       </div>
 
     </div>
 
-    
+
   </div>
 
   </div>
