@@ -1,4 +1,4 @@
-var svgRace = d3.select("#chart").append("svg")
+var svgRace = d3.select("#prestanti").append("svg")
     .attr("width", width + margin.left + margin.right + 50)
     .attr("height", height + margin.top + margin.bottom);
 
