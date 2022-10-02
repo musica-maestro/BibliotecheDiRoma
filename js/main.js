@@ -5,9 +5,9 @@ var nodes
 var dataset;
 
 
-const margin = { top: 25, right: 50, bottom: 25, left: 50 },
-    width = 300
-    height = 400
+const margin = { top: 25, right: 25, bottom: 25, left: 50 },
+    width = 800
+    height = 600
 
 ////////// Slider //////////
 
@@ -88,7 +88,7 @@ function setSliderScale(data, startDate, endDate) {
 
     slider = svgSlider.append("g")
         .attr("class", "slider")
-        .attr("transform", "translate(" + margin.left + "," + height / 5 + ")");
+        .attr("transform", "translate(" + margin.left + "," + 65 + ")");
 
     slider.append("line")
         .attr("class", "track")

@@ -1,18 +1,19 @@
 const marginGraph = { top: 25, right: 25, bottom: 25, left: 25 },
-    widthGraph = 720 - marginGraph.left - marginGraph.right,
-    heightGraph = 400 - marginGraph.top - marginGraph.bottom;
+    widthGraph = 900 - marginGraph.left - marginGraph.right,
+    heightGraph = 600 - marginGraph.top - marginGraph.bottom;
 
 var svgGraph = d3.select("#graph")
     .append("svg")
-    .attr("width", widthGraph + marginGraph.left + marginGraph.right)
-    .attr("height", heightGraph + marginGraph.top + marginGraph.bottom);
+    .attr("width", widthGraph)
+    .attr("height", heightGraph)
+    .attr("viewBox", [-widthGraph / 2, -heightGraph / 2, widthGraph, heightGraph]);
 
     var simulation = d3.forceSimulation()
-    .force("link", d3.forceLink().id(function (d) { return d; }))
-    .force("x", d3.forceX(150).strength(0.05))
-    .force("y", d3.forceY(75).strength(0.05))
-    .force("charge", d3.forceManyBody())
-    .force("center", d3.forceCenter(width / 2, height / 2));
+    .force("link", d3.forceLink().id(d => d.id).distance(50))
+    .force("charge", d3.forceManyBody().strength(-200))
+    .force("x", d3.forceX())
+    .force("y", d3.forceY())
+
 
     var tooltip = d3.select("#graph").append("div")
     .attr("class", "tooltip")
@@ -56,7 +57,8 @@ function drawGraph(graphNodes, graphLinks) {
 
     // Enter any new nodes
     nodeEnter = node.enter().append("circle")
-        .attr("r", 5)
+        .attr("r", 8)
+        .attr("stroke", "black")
         .on("click", function (d, i) {
             if(d3.select(this).attr("fill") == null)
                 d3.select(this).attr("fill", cScale(d.name))

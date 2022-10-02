@@ -2,49 +2,47 @@
 <html>
 
 <head>
-  <title>INFOVIS Individual Project</title>
+  <title>Biblioteche di Roma</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
   <meta content="utf-8" http-equiv="encoding">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,700|Montserrat:300" rel="stylesheet">
   <script src="//d3js.org/d3.v4.min.js"></script>
   </script>
 </head>
 
 <body>
-
   <div class="container">
 
-    <div class="row">
-      <div class="col-3 my-5 input-group-inline">
-        <div class="input-group-text">Data iniziale:<input class="mx-auto" type="date" id="start-date" placeholder="dd-mm-yyyy"></div>
+    <div class="row sticky-top bg-white">
+      <div class="col-3 my-5">
+        <button class="btn btn-primary my-2 w-100" id="play-button">Play</button>
+        <div class="row form-inline"></div>
+        <div class="input-group-text my-2">Data iniziale:<input class="" type="date" id="start-date" placeholder="dd-mm-yyyy"></div>
+        <div class="input-group-text my-2">Data finale:<input class="" type="date" id="end-date" placeholder="dd-mm-yyyy"></div>
       </div>
-      <div class="col-3 my-5 input-group-inline">
-        <div class="input-group-text">Data finale:<input class="mx-auto" type="date" id="end-date" placeholder="dd-mm-yyyy"></div>
-      </div>
-    </div>
-
-
-    <div class="row">
-      <div class="col-12">
+      <div class="col-9">
         <div id="vis"></div>
       </div>
     </div>
 
+
     <div class="row">
-      <div class="col-12">
-        <h5>Grafo dei prestiti</h5>
-        <div class="mx-auto" id="graph"></div>
+      <div class="col-md-8 offset-md-2">
+        <h3 class="my-2">Grafo dei prestiti</h3>
+        <div id="graph"></div>
       </div>
     </div>
 
     <div class="row">
       <div class="col-6">
-        <h5>Top 10 Biblioteche che chiedono libri in prestito</h5>
+        <h3>Top 10 Biblioteche che chiedono libri in prestito</h3>
         <div id="richiedenti"></div>
       </div>
       <div class="col-6">
-        <h5>Top 10 Biblioteche che prestano libri</h5>
+        <h3>Top 10 Biblioteche che prestano libri</h3>
         <div id="prestanti"></div>
       </div>
 

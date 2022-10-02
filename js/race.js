@@ -1,14 +1,18 @@
+const marginRace = { top: 10, right: 30, bottom: 0, left: 10 },
+    widthRace = 500
+    heightRace = 500
+
 var tickDuration = 500;
 var top_n = 10;
-let barPadding = (height - (margin.bottom + margin.top)) / (top_n * 5);
+let barPadding = (heightRace - (marginRace.bottom + marginRace.top)) / (top_n * 5);
 
 var svgRaceRichiedenti = d3.select("#richiedenti").append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom);
+  .attr("width", widthRace)
+  .attr("height", heightRace);
 
 var svgRacePrestanti = d3.select("#prestanti").append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom);
+  .attr("width", widthRace)
+  .attr("height", heightRace);
 
 var raceXrichiedenti = d3.scaleLinear()
 var raceYrichiedenti = d3.scaleLinear()
@@ -23,19 +27,19 @@ var setPrestanti = false
 
 function setRaceScaleRichiedenti(data) {
   raceXrichiedenti.domain([0, d3.max(data, d => d.value)])
-    .range([margin.left, width - margin.right]);
+    .range([marginRace.left, widthRace - marginRace.right]);
 
   raceYrichiedenti.domain([top_n, 0])
-    .range([height - margin.bottom, margin.top]);
+    .range([heightRace - marginRace.bottom, marginRace.top]);
 
   xAxisRichiedenti.scale(raceXrichiedenti)
     .ticks(width > 500 ? 5 : 2)
-    .tickSize(-(height - margin.top - margin.bottom))
+    .tickSize(-(heightRace - marginRace.top - marginRace.bottom))
     .tickFormat(d => d3.format(',')(d));
 
   svgRaceRichiedenti.append('g')
     .attr('class', 'axis xAxisRichiedenti')
-    .attr('transform', `translate(0, ${margin.top})`)
+    .attr('transform', `translate(0, ${marginRace.top})`)
     .call(xAxisRichiedenti)
     .selectAll('.tick line')
     .classed('origin', d => d == 0);
@@ -43,19 +47,19 @@ function setRaceScaleRichiedenti(data) {
 
 function setRaceScalePrestanti(data) {
   raceXprestanti.domain([0, d3.max(data, d => d.value)])
-    .range([margin.left, width - margin.right - margin.left]);
+    .range([marginRace.left, widthRace - marginRace.right - marginRace.left]);
 
   raceYprestanti.domain([top_n, 0])
-    .range([height - margin.bottom, margin.top]);
+    .range([heightRace - marginRace.bottom, marginRace.top]);
 
   xAxisPrestanti.scale(raceXprestanti)
     .ticks(width > 500 ? 5 : 2)
-    .tickSize(-(height - margin.top - margin.bottom))
+    .tickSize(-(heightRace - marginRace.top - marginRace.bottom))
     .tickFormat(d => d3.format(',')(d));
 
   svgRacePrestanti.append('g')
     .attr('class', 'axis xAxisPrestanti')
-    .attr('transform', `translate(0, ${margin.top})`)
+    .attr('transform', `translate(0, ${marginRace.top})`)
     .call(xAxisPrestanti)
     .selectAll('.tick line')
     .classed('origin', d => d == 0);
@@ -144,8 +148,6 @@ function raceRichiedenti(data) {
     .attr('x', d => raceXrichiedenti(d.value) - 8)
     .attr('y', d => raceYrichiedenti(top_n + 1) + 5)
     .remove();
-
-
 
   valueLabels = svgRaceRichiedenti.selectAll('.valueLabel').data(data, d => d.key + d.value);
 
