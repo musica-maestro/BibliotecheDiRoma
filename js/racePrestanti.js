@@ -1,5 +1,5 @@
 var svgRacePrestanti = d3.select("#prestanti").append("svg")
-    .attr("width", width + margin.left + margin.right + 50)
+    .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom);
 
 var tickDuration = 500;
@@ -14,7 +14,7 @@ var xAxisPrestanti = d3.axisTop()
 
 function setRaceScalePrestanti(data) {
     raceXprestanti.domain([0, d3.max(data, d => d.value)])
-        .range([margin.left, width - margin.right - 100]);
+        .range([margin.left, width - margin.right - margin.left]);
 
     raceYprestanti.domain([top_n, 0])
         .range([height - margin.bottom, margin.top]);
@@ -69,6 +69,7 @@ function initRacePrestanti(data) {
 
 function updateRacePrestanti(data){
     sortedRange = [...data].sort((a, b) => b.value - a.value)
+    setRaceScalePrestanti(data)
     raceXprestanti.domain([0, d3.max(data, d => d.value)]); 
      
     svgRacePrestanti.select('.xAxisPrestanti')

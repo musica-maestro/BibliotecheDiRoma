@@ -6,8 +6,8 @@ var dataset;
 
 
 const margin = { top: 25, right: 50, bottom: 25, left: 50 },
-    width = 720 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    width = 300
+    height = 400
 
 ////////// Slider //////////
 
@@ -56,7 +56,6 @@ function step() {
         clearInterval(timer);
         // timer = 0;
         playButton.text("Play");
-        console.log("Slider moving: " + currentValue);
     }
 }
 
@@ -75,8 +74,9 @@ function update(h) {
 
     tempRichiedenti = creaDatiRace(newData, true)
     tempPrestanti = creaDatiRace(newData, false)
-    updateRacePrestanti(tempPrestanti);
-    updateRaceRichiedenti(tempRichiedenti);
+
+    racePrestanti(tempPrestanti);
+    raceRichiedenti(tempRichiedenti);
     drawGraph(nodes, newData);
 }
 
@@ -206,8 +206,8 @@ d3.csv("data/fake.csv", prepare, function (data) {
     // Crea e plotta le race chart
     tempRichiedenti = creaDatiRace(dataset, true)
     tempPrestanti = creaDatiRace(dataset, false)
-    initRacePrestanti(tempPrestanti);
-    initRaceRichiedenti(tempRichiedenti);
+    racePrestanti(tempPrestanti);
+    raceRichiedenti(tempRichiedenti);
 
     // plotta il grafo
     drawGraph(nodes, dataset);
@@ -225,7 +225,6 @@ d3.csv("data/fake.csv", prepare, function (data) {
                 timer = setInterval(step, 1000);    // un secondo per ogni step
                 button.text("Pause");
             }
-            console.log("Slider moving: " + currentValue);
         })
 
     function nodeByName(name) {

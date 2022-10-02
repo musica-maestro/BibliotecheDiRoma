@@ -41,8 +41,6 @@ function drawGraph(graphNodes, graphLinks) {
         .selectAll("line")
         .data(graphLinks);
 
-    console.log(link)
-
     link.exit().remove();
 
     // Enter links
@@ -59,9 +57,11 @@ function drawGraph(graphNodes, graphLinks) {
     // Enter any new nodes
     nodeEnter = node.enter().append("circle")
         .attr("r", 5)
-        .on("click", function (d) {
-            console.log(this)
-            //gestisciTabelle(d, this)
+        .on("click", function (d, i) {
+            if(d3.select(this).attr("fill") == null)
+                d3.select(this).attr("fill", cScale(d.name))
+            else
+                d3.select(this).attr("fill", null)
         })
         .on("mouseenter", function (d) {
             enfatiseLink(link, d)
