@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 
 <head>
   <title>Biblioteche di Roma</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
   <meta content="utf-8" http-equiv="encoding">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="css/style.css">
   <link href="https://fonts.googleapis.com/css?family=Lora:400,700|Montserrat:300" rel="stylesheet">
   <script src="//d3js.org/d3.v4.min.js"></script>
@@ -14,43 +15,49 @@
 </head>
 
 <body>
-  <div class="container">
-
-    <div class="row sticky-top bg-white">
-      <div class="col-3 my-5">
+  <div class="container-fluid" id="top">
+    <div class="row justify-content-center sticky-top bg-info text-center">
+      <div class="col-auto my-5">
         <button class="btn btn-primary my-2 w-100" id="play-button">Play</button>
         <div class="row form-inline"></div>
-        <div class="input-group-text my-2">Data iniziale:&emsp;<input class="" type="date" id="start-date" placeholder="dd-mm-yyyy"></div>
-        <div class="input-group-text my-2">Data finale:&emsp;&ensp;&nbsp;<input class="" type="date" id="end-date" placeholder="dd-mm-yyyy"></div>
+        <div class="input-group-text my-2">Data iniziale:&emsp;<input class="" type="date" id="start-date"
+            placeholder="dd-mm-yyyy"></div>
+        <div class="input-group-text my-2">Data finale:&emsp;&ensp;&nbsp;<input class="" type="date" id="end-date"
+            placeholder="dd-mm-yyyy"></div>
       </div>
-      <div class="col-9">
+      <div class="col-auto">
         <div id="vis"></div>
       </div>
     </div>
-
-
+  </div>
+  <div class="container">
     <div class="row">
-      <div class="col-4">
+      <div class="col-lg-4 col-sm-12 col-xs-12">
         <h3 class="my-2 text-primary">Istruzioni</h3>
         <p>Questa interfaccia serve a studiare i prestiti interbibliotecari delle "Biblioteche di Roma".</p>
-        <p>In alto è possibile selezionare il periodo di interesse dell'analisi. Premendo il tasto play è possibile far partire l'animazione dei grafici. È possibile selezionare l'intervallo in modo che l'animazione sia in ordine cronologico inverso.</p>
-        <p>Nel "Grafo dei prestiti" (a destra) ogni nodo rappresenta una biblioteca e ogni arco un prestito. 
-          Posizionando il mouse su un nodo si evidenziano le richieste di prestito dal nodo selezionato verso le biblioteche collegate.</p>
-        <p>Nei grafici in basso è possibile vedere la top 10 delle biblioteche che richiedono oppure prestano più libri.</p>
-        <p>Facendo click su un nodo oppure su una barra si evidenziano le informazioni relative a quella biblioteca (può essere selezionato più di un elemento).</p>
+        <p>In alto è possibile selezionare il periodo di interesse dell'analisi. Premendo il tasto play è possibile far
+          partire l'animazione dei grafici. È possibile selezionare l'intervallo in modo che l'animazione sia in ordine
+          cronologico inverso.</p>
+        <p>Nel "Grafo dei prestiti" (a destra) ogni nodo rappresenta una biblioteca e ogni arco un prestito.
+          Posizionando il mouse su un nodo si evidenziano le richieste di prestito dal nodo selezionato verso le
+          biblioteche collegate.</p>
+        <p>Nei grafici in basso è possibile vedere la top 10 delle biblioteche che richiedono oppure prestano più libri.
+        </p>
+        <p>Facendo click su un nodo oppure su una barra si evidenziano le informazioni relative a quella biblioteca (può
+          essere selezionato più di un elemento).</p>
       </div>
-      <div class="col-md-8">
+      <div class="col-lg-8 col-sm-12 col-xs-12">
         <h3 class="my-2 text-center">Grafo dei prestiti</h3>
         <div id="graph"></div>
       </div>
     </div>
 
     <div class="row">
-      <div class="col-6">
+      <div class="col-lg-6 col-sm-12 col-xs-12">
         <h3>Top 10 Biblioteche richiedenti</h3>
         <div id="richiedenti"></div>
       </div>
-      <div class="col-6">
+      <div class="col-lg-6 col-sm-12 col-xs-12">
         <h3>Top 10 Biblioteche prestanti</h3>
         <div id="prestanti"></div>
       </div>
@@ -69,7 +76,8 @@
   <script src="js/race.js"></script>
 
   <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </body>
 
 </html>
