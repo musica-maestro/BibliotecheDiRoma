@@ -15,9 +15,16 @@ var svgGraph = d3.select("#graph")
     .force("y", d3.forceY())
 
 
-    var tooltip = d3.select("#graph").append("div")
+    var tooltip =  d3.select("#graph")
+    .append("div")
+    .style("opacity", 0)
     .attr("class", "tooltip")
-    .style("opacity", 0);
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+
 
 linkGroup = svgGraph.append("g")
     .attr("class", "links")
@@ -62,12 +69,13 @@ function drawGraph(graphNodes, graphLinks) {
             evidenzia(d.name)
         })
         .on("mouseenter", function (d) {
+            mouseoverNodo(this)
             enfatiseLink(link, d)
-            showTooltip(d)
         })
+        .on("mousemove", mousemoveNodo)
         .on("mouseleave", function (d) {
             showAllLinks(link, d)
-            deshowTooltip(d)
+            mouseleaveNodo(this)
         })
         .call(d3.drag()
             .on("start", dragstarted)
@@ -129,20 +137,7 @@ function showAllLinks(link, d) {
 
 // Funzioni per mostrare il nome del nodo del grafo
 
-function showTooltip(d) {
-    tooltip.transition()
-        .duration(200)
-        .style("opacity", .7);
-    tooltip.html(d.name)
-        .style("left", (d3.event.pageX - widthGraph + 100) + "px")
-        .style("top", (d3.event.pageY - 160) + "px");
-}
 
-function deshowTooltip(d) {
-    tooltip.transition()
-        .duration(500)
-        .style("opacity", 0);
-}
 
 function evidenzia(name){
 
@@ -177,3 +172,19 @@ function checkEvidenziato(){
             barsDaEvidenziare.attr("stroke", "black").attr("stroke-width", 4)
         })
 }
+
+var mouseoverNodo = function (d) {
+    tooltip
+      .style("opacity", 1)
+    
+  }
+  var mousemoveNodo = function (d) {
+    tooltip
+      .html(d.name)
+      .style("left", (d3.mouse(this)[0] + 400) + "px")
+      .style("top", (d3.mouse(this)[1]  + 400) + "px")
+  }
+  var mouseleaveNodo = function (d) {
+    tooltip
+      .style("opacity", 0)
+  }

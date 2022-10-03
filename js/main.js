@@ -273,5 +273,3 @@ function prepare(d) {
     d.Data = parseDate(d.Data);
     return d;
 }
-
-

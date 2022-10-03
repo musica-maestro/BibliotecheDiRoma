@@ -2,6 +2,26 @@ const marginRace = { top: 25, right: 30, bottom: 0, left: 10 },
   widthRace = 550
 heightRace = 400
 
+var richiedentiTooltip = d3.select("#richiedenti")
+  .append("div")
+  .style("opacity", 0)
+  .attr("class", "tooltip")
+  .style("background-color", "white")
+  .style("border", "solid")
+  .style("border-width", "2px")
+  .style("border-radius", "5px")
+  .style("padding", "5px")
+
+var prestantiTooltip = d3.select("#prestanti")
+  .append("div")
+  .style("opacity", 0)
+  .attr("class", "tooltip")
+  .style("background-color", "white")
+  .style("border", "solid")
+  .style("border-width", "2px")
+  .style("border-radius", "5px")
+  .style("padding", "5px")
+
 var tickDuration = 500;
 var top_n = 10;
 let barPadding = (heightRace - (marginRace.bottom + marginRace.top)) / (top_n * 5);
@@ -68,6 +88,7 @@ function setRaceScalePrestanti(data) {
 
 
 function raceRichiedenti(data, invertire) {
+
   // se non ho disegnato nulla inizializzo gli assi
   if (!setRichiedenti) {
     setRichiedenti = true
@@ -76,7 +97,11 @@ function raceRichiedenti(data, invertire) {
 
   if (invertire) {
     sortedRange = [...data].sort((a, b) => a.value - b.value)
-    raceXrichiedenti.domain([0, sortedRange[top_n-1].value]);
+    if (sortedRange.length > 10)
+      raceXrichiedenti.domain([0, sortedRange[top_n - 1].value]);
+    else {
+      raceXrichiedenti.domain([0, sortedRange[sortedRange.length - 1].value]);
+    }
   }
   else {
     sortedRange = [...data].sort((a, b) => b.value - a.value)
@@ -102,6 +127,9 @@ function raceRichiedenti(data, invertire) {
     .on("click", function (d) {
       evidenzia(d.key)
     })
+    .on("mouseover", mouseoverRichiedenti)
+    .on("mousemove", mousemoveRichiedenti)
+    .on("mouseleave", mouseleaveRichiedenti)
     .style('fill', d => cScale(d.key))
     .transition()
     .duration(tickDuration)
@@ -204,7 +232,11 @@ function racePrestanti(data, invertire) {
 
   if (invertire) {
     sortedRange = [...data].sort((a, b) => a.value - b.value)
-    raceXprestanti.domain([0, sortedRange[top_n-1].value]);
+    if (sortedRange.length > 10)
+      raceXprestanti.domain([0, sortedRange[top_n - 1].value]);
+    else {
+      raceXprestanti.domain([0, sortedRange[sortedRange.length - 1].value]);
+    }
   }
   else {
     sortedRange = [...data].sort((a, b) => b.value - a.value)
@@ -230,6 +262,9 @@ function racePrestanti(data, invertire) {
     .on("click", function (d) {
       evidenzia(d.key)
     })
+    .on("mouseover", mouseoverPrestanti)
+    .on("mousemove", mousemovePrestanti)
+    .on("mouseleave", mouseleavePrestanti)
     .style('fill', d => cScale(d.key))
     .transition()
     .duration(tickDuration)
@@ -323,4 +358,34 @@ function racePrestanti(data, invertire) {
     .attr('x', d => raceXprestanti(d.value) + 5)
     .attr('y', d => raceYprestanti(sortedRange.findIndex(e => e.key === d.key)) + 5 + ((raceYprestanti(1) - raceYprestanti(0)) / 2) + 1)
     .tween("text", function (d) { d.value });
+}
+
+var mouseoverRichiedenti = function (d) {
+  richiedentiTooltip
+    .style("opacity", 1)
+}
+var mousemoveRichiedenti = function (d) {
+  richiedentiTooltip
+    .html(d.key)
+    .style("left", (d3.mouse(this)[0] + 70) + "px")
+    .style("top", (d3.mouse(this)[1]) + "px")
+}
+var mouseleaveRichiedenti = function (d) {
+  richiedentiTooltip
+    .style("opacity", 0)
+}
+
+var mouseoverPrestanti = function (d) {
+  prestantiTooltip
+    .style("opacity", 1)
+}
+var mousemovePrestanti = function (d) {
+  prestantiTooltip
+    .html(d.key)
+    .style("left", (d3.mouse(this)[0] + 70) + "px")
+    .style("top", (d3.mouse(this)[1]) + "px")
+}
+var mouseleavePrestanti = function (d) {
+  prestantiTooltip
+    .style("opacity", 0)
 }
