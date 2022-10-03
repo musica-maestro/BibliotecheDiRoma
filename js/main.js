@@ -7,7 +7,7 @@ var dataset;
 
 const margin = { top: 25, right: 25, bottom: 25, left: 50 },
     width = 800
-    height = 600
+height = 600
 
 ////////// Slider //////////
 
@@ -28,6 +28,17 @@ var svgSlider = d3.select("#vis")
     .attr("width", width + margin.left + margin.right);
 
 /* Formatter per le date */
+var ID_Time = {
+    "dateTime": "%d %m %Y",
+    "date": "%d.%m.%Y",
+    "time": "%H:%M:%S",
+    "periods": ["AM", "PM"],
+    "days": ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"],
+    "shortDays": ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"],
+    "months": ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
+    "shortMonths": ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"]
+}
+var IDTime = d3.timeFormatDefaultLocale(ID_Time);
 var formatDateIntoYear = d3.timeFormat("%b %Y");
 var formatDate = d3.timeFormat("%d %b %Y");
 var parseDate = d3.timeParse("%d-%m-%Y");
@@ -63,8 +74,6 @@ function update(h) {
     // update position and text of label according to slider scale
     handle.attr("cx", timeX(h));
 
-    console.log(h)
-
     label
         .attr("x", timeX(h))
         .text(formatDate(h));
@@ -80,6 +89,7 @@ function update(h) {
     racePrestanti(tempPrestanti);
     raceRichiedenti(tempRichiedenti);
     drawGraph(nodes, newData);
+    checkEvidenziato();
 }
 
 function setSliderScale(data, startDate, endDate) {
@@ -112,7 +122,7 @@ function setSliderScale(data, startDate, endDate) {
         .attr("class", "ticks")
         .attr("transform", "translate(0," + 18 + ")")
         .selectAll("text")
-        .data(timeX.ticks(10))
+        .data(timeX.ticks(3))
         .enter()
         .append("text")
         .attr("x", timeX)
@@ -238,3 +248,5 @@ function prepare(d) {
     d.Data = parseDate(d.Data);
     return d;
 }
+
+

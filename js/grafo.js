@@ -150,15 +150,32 @@ function evidenzia(name){
 
     classNameBars = 'rect.bar.'+`${name.replace(/\s/g, '_')}`
     classNameBalls = 'circle.ball.'+`${name.replace(/\s/g, '_')}`
-    bars = d3.selectAll(classNameBars)
-    balls = d3.selectAll(classNameBalls)
+    barsEvidenziate = d3.selectAll(classNameBars)
+    ballsEvidenziate = d3.selectAll(classNameBalls)
 
-    if(bars.attr("stroke") == null || balls.attr("fill") == null){
-        balls.attr("fill", cScale(name))
-        bars.attr("stroke", "black").attr("stroke-width", 4)
+    if(ballsEvidenziate.attr("fill") == null){
+        ballsEvidenziate.attr("fill", cScale(name))
+        if( barsEvidenziate.size() != 0 && barsEvidenziate.attr("stroke") == null){
+            barsEvidenziate.attr("stroke", "black").attr("stroke-width", 4)
+        }
     }
     else{
-        balls.attr("fill", null)
-        bars.attr("stroke", null)
+        ballsEvidenziate.attr("fill", null)
+        barsEvidenziate.attr("stroke", null)
     }
+}
+
+function checkEvidenziato(){
+    ballsEvidenziate = d3.selectAll("circle")
+    .filter(function() {
+      return d3.select(this).attr("fill") != null; // filter by single attribute
+    })
+
+    if(ballsEvidenziate.size() != 0)
+        ballsEvidenziate.each(function(d,i) {
+            nome = d3.select(this).attr("class").split(' ')[1];
+            classNameBars = 'rect.bar.'+`${nome.replace(/\s/g, '_')}`
+            barsDaEvidenziare = d3.selectAll(classNameBars)
+            barsDaEvidenziare.attr("stroke", "black").attr("stroke-width", 4)
+        })
 }
