@@ -1,6 +1,6 @@
-const marginRace = { top: 10, right: 30, bottom: 0, left: 10 },
-    widthRace = 400
-    heightRace = 400
+const marginRace = { top: 25, right: 30, bottom: 0, left: 10 },
+  widthRace = 550
+heightRace = 400
 
 var tickDuration = 500;
 var top_n = 10;
@@ -67,16 +67,21 @@ function setRaceScalePrestanti(data) {
 
 
 
-function raceRichiedenti(data) {
-  sortedRange = [...data].sort((a, b) => b.value - a.value)
-
+function raceRichiedenti(data, invertire) {
   // se non ho disegnato nulla inizializzo gli assi
   if (!setRichiedenti) {
     setRichiedenti = true
     setRaceScaleRichiedenti(data)
   }
 
-  raceXrichiedenti.domain([0, d3.max(data, d => d.value)]);
+  if (invertire) {
+    sortedRange = [...data].sort((a, b) => a.value - b.value)
+    raceXrichiedenti.domain([0, sortedRange[top_n-1].value]);
+  }
+  else {
+    sortedRange = [...data].sort((a, b) => b.value - a.value)
+    raceXrichiedenti.domain([0, d3.max(data, d => d.value)]);
+  }
 
   svgRaceRichiedenti.select('.xAxisRichiedenti')
     .transition()
@@ -133,7 +138,7 @@ function raceRichiedenti(data) {
       evidenzia(d.key)
     })
     .style('text-anchor', 'end')
-    .html(d => d.key)
+    .html(d => (d.key).split(' ')[0])
     .transition()
     .duration(tickDuration)
     .ease(d3.easeLinear)
@@ -191,15 +196,20 @@ function raceRichiedenti(data) {
     .tween("text", function (d) { d.value })
 }
 
-function racePrestanti(data) {
-  sortedRange = [...data].sort((a, b) => b.value - a.value)
-
+function racePrestanti(data, invertire) {
   if (!setPrestanti) {
     setPrestanti = true
     setRaceScalePrestanti(data)
   }
 
-  raceXprestanti.domain([0, d3.max(data, d => d.value)]);
+  if (invertire) {
+    sortedRange = [...data].sort((a, b) => a.value - b.value)
+    raceXprestanti.domain([0, sortedRange[top_n-1].value]);
+  }
+  else {
+    sortedRange = [...data].sort((a, b) => b.value - a.value)
+    raceXprestanti.domain([0, d3.max(data, d => d.value)]);
+  }
 
   svgRacePrestanti.select('.xAxisPrestanti')
     .transition()
@@ -255,7 +265,7 @@ function racePrestanti(data) {
       evidenzia(d.key)
     })
     .style('text-anchor', 'end')
-    .html(d => d.key)
+    .html(d => (d.key).split(' ')[0])
     .transition()
     .duration(tickDuration)
     .ease(d3.easeLinear)

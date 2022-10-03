@@ -17,6 +17,8 @@ var targetValue = width;
 
 var playButton = d3.select("#play-button");
 var resetButton = d3.select("#reset-button");
+var invertButton = d3.select("#invert-button");
+var invertire = false
 
 var timeX = d3.scaleTime()
 
@@ -60,7 +62,7 @@ function cambiaRange() {
 }
 
 function step() {
-    update(timeX.invert(currentValue));
+    update(timeX.invert(currentValue), invertire);
     currentValue = currentValue + (targetValue / 151);
     if (currentValue > targetValue) {
         moving = false;
@@ -71,7 +73,7 @@ function step() {
     }
 }
 
-function update(h) {
+function update(h, invertire) {
     // update position and text of label according to slider scale
     handle.attr("cx", timeX(h));
 
@@ -87,8 +89,8 @@ function update(h) {
     tempRichiedenti = creaDatiRace(newData, true)
     tempPrestanti = creaDatiRace(newData, false)
 
-    racePrestanti(tempPrestanti);
-    raceRichiedenti(tempRichiedenti);
+    racePrestanti(tempPrestanti, invertire);
+    raceRichiedenti(tempRichiedenti, invertire);
     drawGraph(nodes, newData);
     checkEvidenziato();
 }
@@ -115,7 +117,7 @@ function setSliderScale(data, startDate, endDate) {
             .on("start.interrupt", function () { slider.interrupt(); })
             .on("start drag", function () {
                 currentValue = d3.event.x;
-                update(timeX.invert(currentValue));
+                update(timeX.invert(currentValue), invertire);
             })
         );
 
@@ -247,6 +249,19 @@ d3.csv("data/fake.csv", prepare, function (data) {
             ballsEvidenziate = d3.selectAll('circle')
             ballsEvidenziate.attr("fill", null)
             barsEvidenziate.attr("stroke", null)
+        })
+
+    // inverte la classifica
+    invertButton
+        .on("click", function () {
+            if ( invertire ){
+                invertire = false 
+                update(timeX.invert(currentValue), invertire);
+            }
+            else{
+                invertire = true 
+                update(timeX.invert(currentValue), invertire); 
+            }
         })
 
     function nodeByName(name) {
