@@ -16,6 +16,7 @@ var currentValue = 0;
 var targetValue = width;
 
 var playButton = d3.select("#play-button");
+var resetButton = d3.select("#reset-button");
 
 var timeX = d3.scaleTime()
 
@@ -237,6 +238,15 @@ d3.csv("data/fake.csv", prepare, function (data) {
                 timer = setInterval(step, 1000);    // un secondo per ogni step
                 button.text("Pause");
             }
+        })
+
+    // abilita il reset
+    resetButton
+        .on("click", function () {
+            barsEvidenziate = d3.selectAll('rect')
+            ballsEvidenziate = d3.selectAll('circle')
+            ballsEvidenziate.attr("fill", null)
+            barsEvidenziate.attr("stroke", null)
         })
 
     function nodeByName(name) {

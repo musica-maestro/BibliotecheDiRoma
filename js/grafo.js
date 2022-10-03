@@ -26,8 +26,6 @@ nodeGroup = svgGraph.append("g")
     .attr("class", "nodes")
 
 function drawGraph(graphNodes, graphLinks) {
-    
-
     simulation.alpha(0.3).restart();
 
     // Redefine and restart simulation
