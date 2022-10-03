@@ -255,11 +255,15 @@ d3.csv("data/fake.csv", prepare, function (data) {
     invertButton
         .on("click", function () {
             if ( invertire ){
-                invertire = false 
+                invertire = false
+                document.getElementById("titoloRichiedenti").innerHTML = "Classifica delle prime 10 biblioteche richiedenti"
+                document.getElementById("titoloPrestanti").innerHTML = "Classifica delle prime 10 biblioteche prestanti"
                 update(timeX.invert(currentValue), invertire);
             }
             else{
-                invertire = true 
+                invertire = true
+                document.getElementById("titoloRichiedenti").innerHTML = "Classifica delle ultime 10 biblioteche richiedenti"
+                document.getElementById("titoloPrestanti").innerHTML = "Classifica delle ultime 10 biblioteche prestanti"
                 update(timeX.invert(currentValue), invertire); 
             }
         })
