@@ -25,12 +25,15 @@ var svgGraph = d3.select("#graph")
     .style("border-radius", "5px")
     .style("padding", "5px")
 
+    var g = svgGraph.append("g")
+    .attr("class", "everything");
 
-linkGroup = svgGraph.append("g")
+linkGroup = g.append("g")
     .attr("class", "links")
 
-nodeGroup = svgGraph.append("g")
+nodeGroup = g.append("g")
     .attr("class", "nodes")
+
 
 function drawGraph(graphNodes, graphLinks) {
     simulation.alpha(0.3).restart();
@@ -87,7 +90,10 @@ function drawGraph(graphNodes, graphLinks) {
     // Exit any old nodes
     node.exit().remove();
 
+    var zoom_handler = d3.zoom()
+    .on("zoom", zoom_actions);
 
+    zoom_handler(svgGraph);
 
     function ticked() {
         link
@@ -188,3 +194,8 @@ var mouseoverNodo = function (d) {
     tooltip
       .style("opacity", 0)
   }
+
+  //Zoom functions 
+function zoom_actions(){
+    g.attr("transform", d3.event.transform)
+}
