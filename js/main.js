@@ -231,14 +231,14 @@ d3.csv("data/fake.csv", prepare, function (data) {
     playButton
         .on("click", function () {
             var button = d3.select(this);
-            if (button.text() == "Pause") {
+            if (button.text() == "Pausa") {
                 moving = false;
                 clearInterval(timer);
                 button.text("Play");
             } else {
                 moving = true;
                 timer = setInterval(step, 1000);    // un secondo per ogni step
-                button.text("Pause");
+                button.text("Pausa");
             }
         })
 
