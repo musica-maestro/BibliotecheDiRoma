@@ -8,14 +8,13 @@ var svgGraph = d3.select("#graph")
     .attr("height", heightGraph)
     .attr("viewBox", [-widthGraph / 2, -heightGraph / 2, widthGraph, heightGraph]);
 
-    var simulation = d3.forceSimulation()
+var simulation = d3.forceSimulation()
     .force("link", d3.forceLink().id(d => d.id).distance(50))
     .force("charge", d3.forceManyBody().strength(-200))
     .force("x", d3.forceX())
     .force("y", d3.forceY())
 
-
-    var tooltip =  d3.select("#graph")
+var tooltip = d3.select("#graph")
     .append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")
@@ -25,7 +24,7 @@ var svgGraph = d3.select("#graph")
     .style("border-radius", "5px")
     .style("padding", "5px")
 
-    var g = svgGraph.append("g")
+var g = svgGraph.append("g")
     .attr("class", "everything");
 
 linkGroup = g.append("g")
@@ -91,7 +90,7 @@ function drawGraph(graphNodes, graphLinks) {
     node.exit().remove();
 
     var zoom_handler = d3.zoom()
-    .on("zoom", zoom_actions);
+        .on("zoom", zoom_actions);
 
     zoom_handler(svgGraph);
 
@@ -109,8 +108,7 @@ function drawGraph(graphNodes, graphLinks) {
 }
 
 
-// Funzioni per lo spostamento dei nodi del grafo //
-
+// Funzioni per lo spostamento dei nodi del grafo
 function dragstarted(d) {
     if (!d3.event.active) simulation.alphaTarget(0.3).restart();
     d.fx = d.x;
@@ -128,7 +126,7 @@ function dragended(d) {
     d.fy = null;
 }
 
-
+// Funzioni per evidenziare nodi, bar e link
 function enfatiseLink(link, d) {
     link
         .attr("display", "none")
@@ -140,40 +138,35 @@ function showAllLinks(link, d) {
     link.attr("display", "block");
 }
 
+function evidenzia(name) {
 
-// Funzioni per mostrare il nome del nodo del grafo
-
-
-
-function evidenzia(name){
-
-    classNameBars = 'rect.bar.'+`${name.replace(/\s/g, '_')}`
-    classNameBalls = 'circle.ball.'+`${name.replace(/\s/g, '_')}`
+    classNameBars = 'rect.bar.' + `${name.replace(/\s/g, '_')}`
+    classNameBalls = 'circle.ball.' + `${name.replace(/\s/g, '_')}`
     barsEvidenziate = d3.selectAll(classNameBars)
     ballsEvidenziate = d3.selectAll(classNameBalls)
 
-    if(ballsEvidenziate.attr("fill") == null){
+    if (ballsEvidenziate.attr("fill") == null) {
         ballsEvidenziate.attr("fill", cScale(name))
-        if( barsEvidenziate.size() != 0 && barsEvidenziate.attr("stroke") == null){
+        if (barsEvidenziate.size() != 0 && barsEvidenziate.attr("stroke") == null) {
             barsEvidenziate.attr("stroke", "black").attr("stroke-width", 4)
         }
     }
-    else{
+    else {
         ballsEvidenziate.attr("fill", null)
         barsEvidenziate.attr("stroke", null)
     }
 }
 
-function checkEvidenziato(){
+function checkEvidenziato() {
     ballsEvidenziate = d3.selectAll("circle")
-    .filter(function() {
-      return d3.select(this).attr("fill") != null; // filter by single attribute
-    })
+        .filter(function () {
+            return d3.select(this).attr("fill") != null; // filter by single attribute
+        })
 
-    if(ballsEvidenziate.size() != 0)
-        ballsEvidenziate.each(function(d,i) {
+    if (ballsEvidenziate.size() != 0)
+        ballsEvidenziate.each(function (d, i) {
             nome = d3.select(this).attr("class").split(' ')[1];
-            classNameBars = 'rect.bar.'+`${nome.replace(/\s/g, '_')}`
+            classNameBars = 'rect.bar.' + `${nome.replace(/\s/g, '_')}`
             barsDaEvidenziare = d3.selectAll(classNameBars)
             barsDaEvidenziare.attr("stroke", "black").attr("stroke-width", 4)
         })
@@ -181,21 +174,21 @@ function checkEvidenziato(){
 
 var mouseoverNodo = function (d) {
     tooltip
-      .style("opacity", 1)
-    
-  }
-  var mousemoveNodo = function (d) {
-    tooltip
-      .html(d.name)
-      .style("left", (d3.mouse(this)[0] + 400) + "px")
-      .style("top", (d3.mouse(this)[1]  + 400) + "px")
-  }
-  var mouseleaveNodo = function (d) {
-    tooltip
-      .style("opacity", 0)
-  }
+        .style("opacity", 1)
 
-  //Zoom functions 
-function zoom_actions(){
+}
+var mousemoveNodo = function (d) {
+    tooltip
+        .html(d.name)
+        .style("left", (d3.mouse(this)[0] + 400) + "px")
+        .style("top", (d3.mouse(this)[1] + 400) + "px")
+}
+var mouseleaveNodo = function (d) {
+    tooltip
+        .style("opacity", 0)
+}
+
+//Zoom per il grafo
+function zoom_actions() {
     g.attr("transform", d3.event.transform)
 }

@@ -1,30 +1,27 @@
-/* Scala per i colori */
 var cScale = d3.scaleOrdinal(d3.schemePastel2);
 
 var nodes
 var dataset;
 
-
 const margin = { top: 25, right: 25, bottom: 25, left: 50 },
-    width = 800
-height = 600
-
-////////// Slider //////////
-
-var moving = false;
-var currentValue = 0;
-var targetValue = width;
+    width = 800,
+    height = 600
 
 var playButton = d3.select("#play-button");
 var resetButton = d3.select("#reset-button");
 var invertButton = d3.select("#invert-button");
 var invertire = false
 
-var timeX = d3.scaleTime()
+////////// Slider //////////
 
+var moving = false;
+var currentValue = 0;
+var targetValue = width;
 var slider
 var handle
 var label
+
+var timeX = d3.scaleTime()
 
 var svgSlider = d3.select("#vis")
     .append("svg")
@@ -73,15 +70,16 @@ function step() {
     }
 }
 
+// funzione che ridisegna tutto
 function update(h, invertire) {
-    // update position and text of label according to slider scale
+    // aggiornare la posizione e il testo della label in base posizione dello slider
     handle.attr("cx", timeX(h));
 
     label
         .attr("x", timeX(h))
         .text(formatDate(h));
 
-    // filter data set and redraw plot
+    // filtra i dati e ridisegna
     var newData = dataset.filter(function (d) {
         return d.Data <= h;
     })
@@ -144,7 +142,6 @@ function setSliderScale(data, startDate, endDate) {
         .attr("transform", "translate(0," + (-20) + ")")
 }
 
-
 function parseDateInput(parsed) {
     day = parsed.getDate()
     month = (parsed.getMonth() + 1)
@@ -158,9 +155,6 @@ function parseDateInput(parsed) {
     finalString = year + '-' + month + '-' + day
     return finalString
 }
-////////// scales //////////
-
-
 
 function initScale(data) {
     cScale.domain(d3.map(data, function (d) { return d.BibliotecaPrestante; }).keys()).range(d3.schemeSet2);
@@ -175,9 +169,7 @@ function initScale(data) {
 
 
 function creaDatiRace(data, richiedente) {
-
     if (richiedente) {
-
         raceData = d3.nest().key(function (d) {
             return d.BibliotecaRichiedente
         })
@@ -197,7 +189,6 @@ function creaDatiRace(data, richiedente) {
                 });
             }).entries(data)
     }
-
     return raceData
 }
 
@@ -254,17 +245,17 @@ d3.csv("data/fake.csv", prepare, function (data) {
     // inverte la classifica
     invertButton
         .on("click", function () {
-            if ( invertire ){
+            if (invertire) {
                 invertire = false
                 document.getElementById("titoloRichiedenti").innerHTML = "Classifica delle prime 10 biblioteche richiedenti"
                 document.getElementById("titoloPrestanti").innerHTML = "Classifica delle prime 10 biblioteche prestanti"
                 update(timeX.invert(currentValue), invertire);
             }
-            else{
+            else {
                 invertire = true
                 document.getElementById("titoloRichiedenti").innerHTML = "Classifica delle ultime 10 biblioteche richiedenti"
                 document.getElementById("titoloPrestanti").innerHTML = "Classifica delle ultime 10 biblioteche prestanti"
-                update(timeX.invert(currentValue), invertire); 
+                update(timeX.invert(currentValue), invertire);
             }
         })
 
